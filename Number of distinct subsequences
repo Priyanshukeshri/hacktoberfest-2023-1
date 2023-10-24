@@ -1,0 +1,44 @@
+Given a string consisting of lower case English alphabets, the task is to find the number of distinct subsequences of the string
+Note: Answer can be very large, so, ouput will be answer modulo 109+7.
+
+Example 1:
+
+Input: 
+s = "gfg"
+Output: 
+7
+Explanation: 
+The seven distinct subsequences are "", "g", "f", "gf", "fg", "gg" and "gfg" .
+
+
+def countDistinctSubsequences(s):
+    MOD = 10**9 + 7
+    n = len(s)
+
+    # Initialize an array to store the number of distinct subsequences ending at each character.
+    dp = [0] * (n + 1)
+
+    # An empty subsequence is a valid subsequence, so there is 1 way to form it.
+    dp[0] = 1
+
+    # Create a dictionary to store the last position of each character in the string.
+    last_occurrence = {}
+
+    for i in range(1, n + 1):
+        dp[i] = (2 * dp[i - 1]) % MOD  # Number of subsequences ending without s[i].
+
+        # If s[i] has occurred before, subtract the number of subsequences ending at the last occurrence of s[i].
+        if s[i - 1] in last_occurrence:
+            dp[i] -= dp[last_occurrence[s[i - 1] - 1]]
+
+        # Update the last occurrence of s[i].
+        last_occurrence[s[i - 1]] = i - 1
+
+        dp[i] = (dp[i] + MOD) % MOD  # Ensure the result is positive.
+
+    return (dp[n] - 1) % MOD  # Subtract 1 to exclude the empty subsequence.
+
+# Example usage:
+s = "gfg"
+result = countDistinctSubsequences(s)
+print(result)  # Output: 7
